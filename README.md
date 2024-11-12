@@ -117,11 +117,11 @@ with torch.no_grad():
 - Jupyter Notebook
 - MatPlotLib
 ### Installation
-1. Clone the repository
+1. Clone the repository <br>
 `git clone https://github.com/esinocchi/MNIST-Classification.git`
-2. Install the recquried packages:
+2. Install the recquried packages: <br>
 `pip install torch torchvision numpy matplotlib jupyter`
-3. Run the Jupyter Notebook:
+3. Run the Jupyter Notebook: <br>
 `jupyter notebook net.ipynb`
 
   
