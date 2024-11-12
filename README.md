@@ -50,3 +50,78 @@ class CNN(nn.Module):
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
+```
+### Data Loading and Preprocessing
+```python
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,))
+])
+
+train_loader = DataLoader(
+    MNIST(root='./data', train=True, transform=transform, download=True),
+    batch_size=32, shuffle=True
+)
+
+test_loader = DataLoader(
+    MNIST(root='./data', train=False, transform=transform, download=True),
+    batch_size=32, shuffle=False
+)
+```
+### Training Setup
+```python
+model = CNN()
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = model.to(device)
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+```
+### Training Loop
+```python
+num_epochs = 10
+for epoch in range(num_epochs):
+    model.train()
+    for batch_idx, (images, labels) in enumerate(train_loader):
+        images = images.to(device)
+        labels = labels.to(device)
+        
+        optimizer.zero_grad()
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        
+        if batch_idx % 100 == 0:
+            print(f'Epoch: {epoch}, Batch: {batch_idx}, Loss: {loss.item():.4f}')
+```
+### Model Evuluation
+```python
+model.eval()
+with torch.no_grad():
+    correct = 0
+    total = 0
+    for images, labels in test_loader:
+        images = images.to(device)
+        labels = labels.to(device)
+        outputs = model(images)
+        _, predicted = torch.max(outputs.data, 1)
+        total += labels.size(0)
+        correct += (predicted == labels).sum().item()
+    print(f'Accuracy: {100 * correct / total}%')
+```
+### Requirements
+- Python 3.x
+- PyTorch
+- torchvision
+- NumPy
+- Jupyter Notebook
+- MatPlotLib
+### Installation
+1. Clone the repository
+`git clone https://github.com/esinocchi/MNIST-Classification.git`
+2. Install the recquried packages:
+`pip install torch torchvision numpy matplotlib jupyter`
+3. Run the Jupyter Notebook:
+`jupyter notebook net.ipynb`
+
+  
